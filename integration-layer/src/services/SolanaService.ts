@@ -105,7 +105,7 @@ export class SolanaService extends EventEmitter {
         price: number,
         dataType: string,
         description: string,
-        cordaIdentityId: string,
+        identityId: string,
         accessProof?: any
     ): Promise<string> {
         try {
@@ -122,7 +122,7 @@ export class SolanaService extends EventEmitter {
             // Emit event
             this.emit("solanaEvent", {
                 type: "DATA_LISTING_CREATED",
-                identityId: cordaIdentityId,
+                identityId: identityId,
                 timestamp: Date.now(),
                 transactionHash: tx,
                 details: {
@@ -130,13 +130,13 @@ export class SolanaService extends EventEmitter {
                     price,
                     dataType,
                     description,
-                    cordaIdentityId,
+                    identityId,
                     accessProof,
                 },
             } as SolanaEvent);
 
             this.logger.info(
-                `Created data listing ${listingId} for identity ${cordaIdentityId}`
+                `Created data listing ${listingId} for identity ${identityId}`
             );
             return tx;
         } catch (error) {
@@ -189,14 +189,14 @@ export class SolanaService extends EventEmitter {
             // Emit event
             this.emit("solanaEvent", {
                 type: "DATA_PURCHASED",
-                identityId: cordaIdentityId,
+                identityId: identityId,
                 timestamp: Date.now(),
                 transactionHash: tx,
                 details: purchase,
             } as SolanaEvent);
 
             this.logger.info(
-                `Data purchased for listing ${listingId} by identity ${cordaIdentityId}`
+                `Data purchased for listing ${listingId} by identity ${identityId}`
             );
             return purchase;
         } catch (error) {
@@ -233,18 +233,18 @@ export class SolanaService extends EventEmitter {
             // Emit event
             this.emit("solanaEvent", {
                 type: "DATA_LISTING_UPDATED",
-                identityId: cordaIdentityId,
+                identityId: identityId,
                 timestamp: Date.now(),
                 transactionHash: tx,
                 details: {
                     listingId,
                     newPrice,
-                    cordaIdentityId,
+                    identityId,
                 },
             } as SolanaEvent);
 
             this.logger.info(
-                `Updated data listing ${listingId} for identity ${cordaIdentityId}`
+                `Updated data listing ${listingId} for identity ${identityId}`
             );
             return tx;
         } catch (error) {
@@ -276,17 +276,17 @@ export class SolanaService extends EventEmitter {
             // Emit event
             this.emit("solanaEvent", {
                 type: "DATA_LISTING_CANCELLED",
-                identityId: cordaIdentityId,
+                identityId: identityId,
                 timestamp: Date.now(),
                 transactionHash: tx,
                 details: {
                     listingId,
-                    cordaIdentityId,
+                    identityId,
                 },
             } as SolanaEvent);
 
             this.logger.info(
-                `Cancelled data listing ${listingId} for identity ${cordaIdentityId}`
+                `Cancelled data listing ${listingId} for identity ${identityId}`
             );
             return tx;
         } catch (error) {
@@ -325,7 +325,7 @@ export class SolanaService extends EventEmitter {
                 soldAt: listing.soldAt,
                 cancelledAt: listing.cancelledAt,
                 buyer: listing.buyer?.toString(),
-                cordaIdentityId: "", // Would be populated from metadata
+                identityId: "", // Would be populated from metadata
                 accessProof: undefined,
             };
         } catch (error) {
@@ -356,7 +356,7 @@ export class SolanaService extends EventEmitter {
                 soldAt: listing.soldAt,
                 cancelledAt: listing.cancelledAt,
                 buyer: listing.buyer?.toString(),
-                cordaIdentityId: "", // Would be populated from metadata
+                identityId: "", // Would be populated from metadata
                 accessProof: undefined,
             }));
         } catch (error) {
@@ -388,7 +388,7 @@ export class SolanaService extends EventEmitter {
                 soldAt: listing.soldAt,
                 cancelledAt: listing.cancelledAt,
                 buyer: listing.buyer?.toString(),
-                cordaIdentityId: "", // Would be populated from metadata
+                identityId: "", // Would be populated from metadata
                 accessProof: undefined,
             }));
         } catch (error) {
@@ -404,13 +404,13 @@ export class SolanaService extends EventEmitter {
     }
 
     /**
-     * Validate identity proof from Corda
+     * Validate identity proof from Storage backend
      */
     async validateIdentityProof(proof: any): Promise<ValidationResult> {
         try {
             this.validateConnection();
 
-            // In a real implementation, this would validate the proof against Corda
+            // In a real implementation, this would validate the proof against Storage backend
             // For now, we'll do basic validation
             if (
                 !proof.identityId ||

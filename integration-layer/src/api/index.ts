@@ -2,7 +2,7 @@
  * DataSov Integration Layer API Gateway
  *
  * Provides REST API endpoints for cross-chain operations
- * between Corda and Solana networks.
+ * between Storage backend and Solana networks.
  */
 
 import express from "express";
@@ -17,25 +17,25 @@ import {
 } from "@/types";
 import { Logger } from "@/utils/Logger";
 import { CrossChainBridge } from "@/services/CrossChainBridge";
-import { CordaService } from "@/services/CordaService";
+import { IdentityService } from "@/services/IdentityService";
 import { SolanaService } from "@/services/SolanaService";
 
 export class ApiGateway {
     private app: express.Application;
     private bridge: CrossChainBridge;
-    private cordaService: CordaService;
+    private identityService: IdentityService;
     private solanaService: SolanaService;
     private config: BridgeConfig;
     private logger: Logger;
 
     constructor(
         bridge: CrossChainBridge,
-        cordaService: CordaService,
+        identityService: IdentityService,
         solanaService: SolanaService,
         config: BridgeConfig
     ) {
         this.bridge = bridge;
-        this.cordaService = cordaService;
+        this.identityService = identityService;
         this.solanaService = solanaService;
         this.config = config;
         this.logger = new Logger("ApiGateway");
@@ -139,21 +139,21 @@ export class ApiGateway {
         res: express.Response
     ): Promise<void> {
         try {
-            const cordaMetrics = this.cordaService.getMetrics();
+            const storageMetrics = this.identityService.getMetrics();
             const solanaMetrics = await this.solanaService.getMetrics();
             const bridgeStatus = this.bridge.getStatus();
 
             const response: HealthCheckResponse = {
                 status: this.determineOverallStatus(
-                    cordaMetrics,
+                    storageMetrics,
                     solanaMetrics,
                     bridgeStatus
                 ),
                 timestamp: Date.now(),
                 services: {
-                    corda: {
-                        status: cordaMetrics.isConnected ? "up" : "down",
-                        responseTime: cordaMetrics.connectionTime,
+                    storage: {
+                        status: storageMetrics.isConnected ? "up" : "down",
+                        responseTime: storageMetrics.connectionTime || 0,
                         lastCheck: Date.now(),
                     },
                     solana: {
@@ -224,7 +224,7 @@ export class ApiGateway {
     ): Promise<void> {
         try {
             const { id } = req.params;
-            const identity = await this.cordaService.getIdentity(id);
+            const identity = await this.identityService.getIdentity(id);
 
             if (!identity) {
                 res.status(404).json(
@@ -640,7 +640,7 @@ export class ApiGateway {
                 return;
             }
 
-            const isValid = await this.cordaService.validateAccessProof(proof);
+            const isValid = await this.identityService.validateAccessProof(proof);
 
             res.json(
                 this.createApiResponse(
@@ -744,17 +744,17 @@ export class ApiGateway {
      * Determine overall system status
      */
     private determineOverallStatus(
-        cordaMetrics: any,
+        storageMetrics: any,
         solanaMetrics: any,
         bridgeStatus: any
     ): "healthy" | "degraded" | "unhealthy" {
-        const cordaHealthy = cordaMetrics.isConnected;
+        const storageHealthy = storageMetrics.isConnected;
         const solanaHealthy = solanaMetrics.isConnected;
         const bridgeHealthy = bridgeStatus.isRunning;
 
-        if (cordaHealthy && solanaHealthy && bridgeHealthy) {
+        if (storageHealthy && solanaHealthy && bridgeHealthy) {
             return "healthy";
-        } else if (cordaHealthy || solanaHealthy) {
+        } else if (storageHealthy || solanaHealthy) {
             return "degraded";
         } else {
             return "unhealthy";

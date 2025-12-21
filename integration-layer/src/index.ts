@@ -2,12 +2,12 @@
  * DataSov Integration Layer
  *
  * Main entry point for the cross-chain integration service
- * that bridges Corda and Solana networks.
+ * that bridges Storage backend and Solana networks.
  */
 
 import dotenv from "dotenv";
 import { Logger } from "@/utils/Logger";
-import { CordaService } from "@/services/CordaService";
+import { IdentityService } from "@/services/IdentityService";
 import { SolanaService } from "@/services/SolanaService";
 import { CrossChainBridge } from "@/services/CrossChainBridge";
 import { ApiGateway } from "@/api/index";
@@ -19,7 +19,7 @@ dotenv.config();
 class DataSovIntegrationLayer {
     private logger: Logger;
     private config: BridgeConfig;
-    private cordaService: CordaService;
+    private identityService: IdentityService;
     private solanaService: SolanaService;
     private bridge: CrossChainBridge;
     private apiGateway: ApiGateway;
@@ -30,16 +30,16 @@ class DataSovIntegrationLayer {
         this.config = this.loadConfiguration();
 
         // Initialize services
-        this.cordaService = new CordaService(this.config.corda);
+        this.identityService = new IdentityService(this.config.storage);
         this.solanaService = new SolanaService(this.config.solana);
         this.bridge = new CrossChainBridge(
-            this.cordaService,
+            this.identityService,
             this.solanaService,
             this.config
         );
         this.apiGateway = new ApiGateway(
             this.bridge,
-            this.cordaService,
+            this.identityService,
             this.solanaService,
             this.config
         );
@@ -50,20 +50,14 @@ class DataSovIntegrationLayer {
      */
     private loadConfiguration(): BridgeConfig {
         return {
-            corda: {
-                rpcHost: process.env.CORDA_RPC_HOST || "localhost",
-                rpcPort: parseInt(process.env.CORDA_RPC_PORT || "10006"),
-                username: process.env.CORDA_RPC_USERNAME || "user1",
-                password: process.env.CORDA_RPC_PASSWORD || "test",
-                networkMapHost:
-                    process.env.CORDA_NETWORK_MAP_HOST || "localhost",
-                networkMapPort: parseInt(
-                    process.env.CORDA_NETWORK_MAP_PORT || "10002"
-                ),
-                timeout: parseInt(process.env.CORDA_TIMEOUT || "30000"),
-                retryAttempts: parseInt(
-                    process.env.CORDA_RETRY_ATTEMPTS || "3"
-                ),
+            storage: {
+                type: (process.env.STORAGE_TYPE as any) || "arweave",
+                host: process.env.ARWEAVE_HOST || "arweave.net",
+                port: parseInt(process.env.ARWEAVE_PORT || "443"),
+                protocol: (process.env.ARWEAVE_PROTOCOL as "http" | "https") || "https",
+                timeout: parseInt(process.env.STORAGE_TIMEOUT || "30000"),
+                logging: process.env.STORAGE_LOGGING === "true",
+                wallet: process.env.ARWEAVE_WALLET ? JSON.parse(process.env.ARWEAVE_WALLET) : undefined,
             },
             solana: {
                 rpcUrl:
@@ -199,7 +193,7 @@ class DataSovIntegrationLayer {
         return {
             isRunning: this.isRunning,
             bridge: this.bridge.getStatus(),
-            corda: this.cordaService.isHealthy(),
+            storage: this.identityService.isHealthy(),
             solana: this.solanaService.isHealthy(),
             uptime: process.uptime(),
             memoryUsage: process.memoryUsage(),
