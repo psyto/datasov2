@@ -7,7 +7,7 @@ A modern React frontend application for the DataSov hybrid blockchain platform t
 -   **Digital Identity Management**: Register and manage verified digital identities
 -   **Data Marketplace**: Browse, list, and purchase data with transparent pricing
 -   **Real-time Analytics**: Track earnings, performance, and system health
--   **Cross-chain Integration**: Seamless interaction with Arweave and Solana networks
+-   **Cross-chain Integration**: Seamless interaction with distributed storage backends and Solana networks
 -   **Modern UI/UX**: Responsive design with Tailwind CSS and Framer Motion
 -   **Authentication**: Secure user authentication and session management
 -   **Real-time Updates**: Live system status and transaction monitoring

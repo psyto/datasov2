@@ -1,6 +1,6 @@
 # DataSov: Hybrid Digital Identity and Data Ownership
 
-DataSov combines Arweave for permanent identity storage and Solana for high-throughput data ownership trading. This repo contains a minimal end-to-end demo environment and component implementations.
+DataSov combines distributed storage (e.g., Arweave) for permanent identity storage and Solana for high-throughput data ownership trading. The architecture is designed to support multiple distributed storage backends and offline storage options. This repo contains a minimal end-to-end demo environment and component implementations.
 
 ---
 
@@ -104,11 +104,12 @@ This runs a set of HTTP checks against the API and validates frontend availabili
 
 ## Architecture Overview
 
-1. Arweave Component: Permanent Identity Storage
+1. Distributed Storage Layer: Permanent Identity Storage
 
 -   Identity Registration (KYC-friendly)
 -   Immutable audit trail
 -   Client-side encryption
+-   **Storage Backends**: Currently supports Arweave, designed to support multiple distributed storage options (IPFS, Ceramic, etc.) and offline storage
 
 2. Solana Component: Data Marketplace
 
@@ -121,6 +122,7 @@ This runs a set of HTTP checks against the API and validates frontend availabili
 -   Identity proof validation
 -   State synchronization
 -   REST API and health/status endpoints
+-   **Storage Abstraction**: Pluggable storage backend interface for easy integration of new storage providers
 
 ---
 
@@ -144,8 +146,10 @@ This is a lightweight UI demo using mock data.
 
 ---
 
-## Why Arweave + Solana
+## Why Distributed Storage + Solana
 
--   Permanent Storage + Privacy (Arweave) meets Throughput + Openness (Solana).
--   A single integrated user experience with strong identity guarantees and efficient market operations.
--   Fully decentralized architecture without permissioned networks.
+-   **Flexible Storage**: Supports multiple distributed storage backends (Arweave, IPFS, Ceramic, etc.) and offline storage options for maximum flexibility and user choice.
+-   **Permanent Storage + Privacy**: Distributed storage provides immutable identity records with client-side encryption.
+-   **High Throughput**: Solana enables fast, low-cost data marketplace operations.
+-   **Fully Decentralized**: No permissioned networks required - works with any compatible storage backend.
+-   **Future-Proof**: Architecture designed to easily integrate new storage solutions as they emerge.

@@ -1,14 +1,17 @@
-# DataSov: Arweave-Solana Decentralized Architecture
+# DataSov: Distributed Storage-Solana Decentralized Architecture
 
-This document explains how the Arweave and Solana components work together in the DataSov fully decentralized blockchain system to provide permanent identity storage, privacy-preserving encryption, and efficient data trading.
+This document explains how the distributed storage layer (currently Arweave) and Solana components work together in the DataSov fully decentralized blockchain system to provide permanent identity storage, privacy-preserving encryption, and efficient data trading. The architecture is designed to support multiple distributed storage backends and offline storage options.
 
 ## 🔗 Overview
 
-The DataSov system uses a **fully decentralized hybrid blockchain architecture** that leverages the unique strengths of both Arweave and Solana to create a powerful solution for digital identity management and data ownership without requiring permissioned networks.
+The DataSov system uses a **fully decentralized hybrid blockchain architecture** that leverages the unique strengths of distributed storage and Solana to create a powerful solution for digital identity management and data ownership without requiring permissioned networks.
 
 ### Core Philosophy
 
--   **Arweave**: Provides permanent, immutable storage for identity documents and access records
+-   **Distributed Storage Layer**: Provides permanent, immutable storage for identity documents and access records. Currently supports Arweave, with architecture designed to support multiple backends:
+    -   **Distributed Storage**: Arweave, IPFS, Ceramic, etc.
+    -   **Offline Storage**: Local storage, encrypted file systems, etc.
+    -   **Pluggable Interface**: Easy integration of new storage providers
 -   **Solana**: Manages high-performance, on-chain identity state and data trading
 -   **Client-Side Encryption**: Privacy through cryptography, not network design
 -   **KYC Oracle Network**: Decentralized identity verification with multi-signature support
@@ -20,13 +23,20 @@ The DataSov system uses a **fully decentralized hybrid blockchain architecture**
 │                        DataSov System                           │
 ├─────────────────────────────────────────────────────────────────┤
 │  ┌─────────────────────┐    ┌─────────────────────────────────┐ │
-│  │  Arweave Component  │    │      Solana Component           │ │
-│  │ (Permanent Storage) │◄──►│   (Identity + Marketplace)      │ │
+│  │ Storage Layer       │    │      Solana Component           │ │
+│  │ (Distributed/       │◄──►│   (Identity + Marketplace)      │ │
+│  │  Offline Storage)   │    │                                  │ │
 │  │                     │    │                                  │ │
 │  │ • Identity Docs     │    │ • Identity Accounts              │ │
 │  │ • KYC Records       │    │ • Access Permissions             │ │
 │  │ • Permission Proofs │    │ • Data Trading                   │ │
 │  │ • Audit Trail       │    │ • Fee Distribution               │ │
+│  │                     │    │                                  │ │
+│  │ Supported:          │    │                                  │ │
+│  │ • Arweave (current) │    │                                  │ │
+│  │ • IPFS (planned)    │    │                                  │ │
+│  │ • Ceramic (planned) │    │                                  │ │
+│  │ • Offline (planned) │    │                                  │ │
 │  └─────────────────────┘    └─────────────────────────────────┘ │
 │            ▲                              ▲                      │
 │            │         ┌───────────────────┐│                      │
@@ -43,13 +53,13 @@ The DataSov system uses a **fully decentralized hybrid blockchain architecture**
 
 ## 🔄 Integration Flow
 
-### Phase 1: Identity Foundation (Arweave + Solana)
+### Phase 1: Identity Foundation (Storage Layer + Solana)
 
 1. **User Registration**: User creates encrypted identity document
-2. **Arweave Upload**: Encrypted identity uploaded to permanent storage
+2. **Storage Upload**: Encrypted identity uploaded to selected storage backend (e.g., Arweave, IPFS, or offline storage)
 3. **Solana Registration**: Lightweight identity reference created on-chain
 4. **KYC Verification**: Decentralized oracle network verifies identity
-5. **Identity Proof**: Cryptographic proof links Arweave and Solana records
+5. **Identity Proof**: Cryptographic proof links storage layer and Solana records
 
 ### Phase 2: Data Tokenization (Solana)
 
@@ -61,9 +71,9 @@ The DataSov system uses a **fully decentralized hybrid blockchain architecture**
 ### Phase 3: Privacy-Preserving Access
 
 1. **Selective Disclosure**: Users share specific encrypted fields via ECDH
-2. **Permission Grants**: Access permissions recorded on Arweave and Solana
+2. **Permission Grants**: Access permissions recorded on storage layer and Solana
 3. **Time-Based Expiration**: Automatic permission revocation
-4. **Audit Trail**: Complete immutable record on Arweave
+4. **Audit Trail**: Complete immutable record on storage layer
 
 ## 🔐 Detailed Component Interaction
 
@@ -687,25 +697,40 @@ class ZKProofService {
 }
 ```
 
-### 2. Cross-Chain Interoperability
+### 2. Storage Backend Expansion
 
-Support for additional decentralized storage and blockchain networks:
+The architecture is designed to support multiple storage backends:
 
--   IPFS for temporary storage
+**Distributed Storage Options:**
+-   Arweave for permanent storage (currently implemented)
+-   IPFS for distributed storage
 -   Ceramic for decentralized databases
--   Ethereum for broader DeFi integration
--   Polygon for low-cost L2 operations
+-   Additional distributed storage networks
+
+**Offline Storage Options:**
+-   Local encrypted file storage
+-   Encrypted cloud storage (user-controlled)
+-   Hardware security modules (HSM)
+-   Other offline storage solutions
+
+**Pluggable Storage Interface:**
+-   Standardized storage adapter interface
+-   Easy integration of new storage providers
+-   Support for multiple storage backends simultaneously
+-   User choice of storage backend per identity
 
 ## 🎯 Conclusion
 
-The DataSov decentralized architecture successfully combines Arweave's permanent storage with Solana's high-performance capabilities to create a fully decentralized solution for digital identity and data ownership. By using client-side encryption and decentralized KYC oracles, the system provides:
+The DataSov decentralized architecture successfully combines flexible distributed storage with Solana's high-performance capabilities to create a fully decentralized solution for digital identity and data ownership. By using client-side encryption and decentralized KYC oracles, the system provides:
 
 -   **Full Decentralization**: No permissioned networks or central authorities
 -   **Privacy**: Military-grade encryption with selective disclosure
--   **Permanence**: Immutable audit trail on Arweave
+-   **Flexible Storage**: Support for multiple distributed storage backends and offline storage options
+-   **Permanence**: Immutable audit trail on selected storage backend
 -   **Performance**: High-throughput trading on Solana
 -   **Cost Efficiency**: 100x cheaper than permissioned alternatives
 -   **User Control**: Complete ownership of identity and data
+-   **Future-Proof**: Architecture designed to easily integrate new storage solutions
 
 This architecture enables true data sovereignty while maintaining the security, privacy, and compliance features required for real-world applications.
 

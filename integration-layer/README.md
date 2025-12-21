@@ -1,10 +1,10 @@
 # DataSov Integration Layer
 
-A comprehensive integration service for the DataSov hybrid blockchain system. This layer handles identity proof validation, state synchronization, and seamless communication with Arweave and Solana networks.
+A comprehensive integration service for the DataSov hybrid blockchain system. This layer handles identity proof validation, state synchronization, and seamless communication with distributed storage backends (currently Arweave, with support for multiple storage options) and Solana networks.
 
 ## 🚀 Features
 
--   **Identity Management**: Integration with Arweave for permanent identity storage
+-   **Identity Management**: Integration with distributed storage layer (Arweave, IPFS, offline storage, etc.) for permanent identity storage
 -   **Identity Proof Validation**: Cryptographic validation of identity proofs
 -   **State Synchronization**: Real-time synchronization of state with Solana
 -   **Event Processing**: Event-driven communication with blockchain networks
@@ -19,11 +19,17 @@ A comprehensive integration service for the DataSov hybrid blockchain system. Th
 │                    DataSov Integration Layer                    │
 ├─────────────────────────────────────────────────────────────────┤
 │  ┌─────────────────────┐    ┌─────────────────────────────────┐     │
-│  │  Arweave Service     │    │      Solana Service        │     │
+│  │ Storage Service      │    │      Solana Service        │     │
+│  │ (Pluggable Backend)  │    │                             │     │
 │  │                     │    │                             │     │
 │  │ • Identity Storage  │    │ • Data Marketplace         │     │
 │  │ • KYC Verification  │    │ • NFT Operations           │     │
 │  │ • Access Control    │    │ • Trading Operations       │     │
+│  │                     │    │                             │     │
+│  │ Backends:           │    │                             │     │
+│  │ • Arweave (current) │    │                             │     │
+│  │ • IPFS (planned)    │    │                             │     │
+│  │ • Offline (planned) │    │                             │     │
 │  └─────────────────────┘    └─────────────────────────────────┘     │
 │           │                              │                         │
 │           └──────────────┬───────────────┘                         │
