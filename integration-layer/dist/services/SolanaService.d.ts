@@ -27,19 +27,19 @@ export declare class SolanaService extends EventEmitter {
     /**
      * Create a data listing on Solana
      */
-    createDataListing(owner: Keypair, listingId: number, price: number, dataType: string, description: string, cordaIdentityId: string, accessProof?: any): Promise<string>;
+    createDataListing(owner: Keypair, listingId: number, price: number, dataType: string, description: string, identityId: string, accessProof?: any): Promise<string>;
     /**
      * Purchase data from a listing
      */
-    purchaseData(buyer: Keypair, listingId: number, tokenMint: PublicKey, cordaIdentityId: string): Promise<DataPurchase>;
+    purchaseData(buyer: Keypair, listingId: number, tokenMint: PublicKey, identityId: string): Promise<DataPurchase>;
     /**
      * Update data listing
      */
-    updateDataListing(owner: Keypair, listingId: number, newPrice: number, cordaIdentityId: string): Promise<string>;
+    updateDataListing(owner: Keypair, listingId: number, newPrice: number, identityId: string): Promise<string>;
     /**
      * Cancel data listing
      */
-    cancelDataListing(owner: Keypair, listingId: number, cordaIdentityId: string): Promise<string>;
+    cancelDataListing(owner: Keypair, listingId: number, identityId: string): Promise<string>;
     /**
      * Get data listing by ID
      */
@@ -53,7 +53,7 @@ export declare class SolanaService extends EventEmitter {
      */
     getDataListingsByOwner(owner: string): Promise<DataListing[]>;
     /**
-     * Validate identity proof from Corda
+     * Validate identity proof from Storage backend
      */
     validateIdentityProof(proof: any): Promise<ValidationResult>;
     /**

@@ -65,6 +65,27 @@ export interface PersonalInfo {
     encryptedData: Record<string, string>;
 }
 
+export interface EncryptedField {
+    encrypted: string; // Base64 encoded encrypted data
+    iv: string; // Base64 encoded initialization vector
+    authTag: string; // Base64 encoded authentication tag
+}
+
+export interface EncryptedPersonalInfo {
+    fields: Record<string, EncryptedField>;
+    encryptionMetadata: {
+        algorithm: string;
+        keyDerivation: string;
+    };
+}
+
+export interface SelectiveDisclosure {
+    fields: string[];
+    encryptedFields: Record<string, EncryptedField>;
+    consumer: string;
+    timestamp: number;
+}
+
 export interface AccessPermission {
     consumer: string;
     permissionType: PermissionType;
@@ -143,7 +164,7 @@ export interface AccessProof {
 export interface CrossChainEvent {
     eventId: string;
     timestamp: number;
-    chain: "Corda" | "Solana";
+    chain: "Storage" | "Solana" | "Corda"; // Added Storage, kept Corda for compatibility
     eventType: string;
     identityId: string;
     details: Record<string, any>;

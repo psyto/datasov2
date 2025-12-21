@@ -1,7 +1,7 @@
 {
     "name": "datasov-integration-layer",
     "version": "1.0.0",
-    "description": "DataSov Integration Layer - Cross-chain bridge between Corda and Solana",
+    "description": "DataSov Integration Layer - Integration service for Storage backend and Solana",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
@@ -14,12 +14,15 @@
     },
     "keywords": [
         "blockchain",
-        "corda",
+        "storage",
+        "arweave",
         "solana",
         "cross-chain",
         "integration",
         "datasov",
-        "bridge"
+        "bridge",
+        "data-ownership",
+        "ai-economy"
     ],
     "author": "DataSov Team",
     "license": "MIT",
@@ -27,6 +30,7 @@
         "@coral-xyz/anchor": "^0.29.0",
         "@solana/spl-token": "^0.3.9",
         "@solana/web3.js": "^1.87.6",
+        "arweave": "^1.15.7",
         "axios": "^1.6.0",
         "bcryptjs": "^2.4.3",
         "bn.js": "^5.2.1",

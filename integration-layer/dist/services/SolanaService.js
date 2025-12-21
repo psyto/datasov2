@@ -67,14 +67,14 @@ class SolanaService extends events_1.EventEmitter {
     /**
      * Create a data listing on Solana
      */
-    async createDataListing(owner, listingId, price, dataType, description, cordaIdentityId, accessProof) {
+    async createDataListing(owner, listingId, price, dataType, description, identityId, accessProof) {
         try {
             this.validateConnection();
             const tx = await this.client.createDataListing(owner, listingId, price, dataType, description);
             // Emit event
             this.emit("solanaEvent", {
                 type: "DATA_LISTING_CREATED",
-                identityId: cordaIdentityId,
+                identityId: identityId,
                 timestamp: Date.now(),
                 transactionHash: tx,
                 details: {
@@ -82,18 +82,18 @@ class SolanaService extends events_1.EventEmitter {
                     price,
                     dataType,
                     description,
-                    cordaIdentityId,
+                    identityId,
                     accessProof,
                 },
             });
-            this.logger.info(`Created data listing ${listingId} for identity ${cordaIdentityId}`);
+            this.logger.info(`Created data listing ${listingId} for identity ${identityId}`);
             return tx;
         }
         catch (error) {
             this.logger.error(`Failed to create data listing ${listingId}`, error);
             throw new types_1.SolanaError("Failed to create data listing", {
                 listingId,
-                cordaIdentityId,
+                identityId,
                 error: error instanceof Error ? error.message : String(error),
             });
         }
@@ -101,7 +101,7 @@ class SolanaService extends events_1.EventEmitter {
     /**
      * Purchase data from a listing
      */
-    async purchaseData(buyer, listingId, tokenMint, cordaIdentityId) {
+    async purchaseData(buyer, listingId, tokenMint, identityId) {
         try {
             this.validateConnection();
             const tx = await this.client.purchaseData(buyer, listingId, tokenMint);
@@ -116,25 +116,25 @@ class SolanaService extends events_1.EventEmitter {
                 amount: listing.price,
                 timestamp: Date.now(),
                 transactionHash: tx,
-                cordaIdentityId,
+                identityId,
                 accessGranted: true,
             };
             // Emit event
             this.emit("solanaEvent", {
                 type: "DATA_PURCHASED",
-                identityId: cordaIdentityId,
+                identityId,
                 timestamp: Date.now(),
                 transactionHash: tx,
                 details: purchase,
             });
-            this.logger.info(`Data purchased for listing ${listingId} by identity ${cordaIdentityId}`);
+            this.logger.info(`Data purchased for listing ${listingId} by identity ${identityId}`);
             return purchase;
         }
         catch (error) {
             this.logger.error(`Failed to purchase data for listing ${listingId}`, error);
             throw new types_1.SolanaError("Failed to purchase data", {
                 listingId,
-                cordaIdentityId,
+                identityId,
                 error: error instanceof Error ? error.message : String(error),
             });
         }
@@ -142,30 +142,30 @@ class SolanaService extends events_1.EventEmitter {
     /**
      * Update data listing
      */
-    async updateDataListing(owner, listingId, newPrice, cordaIdentityId) {
+    async updateDataListing(owner, listingId, newPrice, identityId) {
         try {
             this.validateConnection();
             const tx = await this.client.updateListingPrice(owner, listingId, newPrice);
             // Emit event
             this.emit("solanaEvent", {
                 type: "DATA_LISTING_UPDATED",
-                identityId: cordaIdentityId,
+                identityId: identityId,
                 timestamp: Date.now(),
                 transactionHash: tx,
                 details: {
                     listingId,
                     newPrice,
-                    cordaIdentityId,
+                    identityId,
                 },
             });
-            this.logger.info(`Updated data listing ${listingId} for identity ${cordaIdentityId}`);
+            this.logger.info(`Updated data listing ${listingId} for identity ${identityId}`);
             return tx;
         }
         catch (error) {
             this.logger.error(`Failed to update data listing ${listingId}`, error);
             throw new types_1.SolanaError("Failed to update data listing", {
                 listingId,
-                cordaIdentityId,
+                identityId,
                 error: error instanceof Error ? error.message : String(error),
             });
         }
@@ -173,29 +173,29 @@ class SolanaService extends events_1.EventEmitter {
     /**
      * Cancel data listing
      */
-    async cancelDataListing(owner, listingId, cordaIdentityId) {
+    async cancelDataListing(owner, listingId, identityId) {
         try {
             this.validateConnection();
             const tx = await this.client.cancelListing(owner, listingId);
             // Emit event
             this.emit("solanaEvent", {
                 type: "DATA_LISTING_CANCELLED",
-                identityId: cordaIdentityId,
+                identityId: identityId,
                 timestamp: Date.now(),
                 transactionHash: tx,
                 details: {
                     listingId,
-                    cordaIdentityId,
+                    identityId,
                 },
             });
-            this.logger.info(`Cancelled data listing ${listingId} for identity ${cordaIdentityId}`);
+            this.logger.info(`Cancelled data listing ${listingId} for identity ${identityId}`);
             return tx;
         }
         catch (error) {
             this.logger.error(`Failed to cancel data listing ${listingId}`, error);
             throw new types_1.SolanaError("Failed to cancel data listing", {
                 listingId,
-                cordaIdentityId,
+                identityId,
                 error: error instanceof Error ? error.message : String(error),
             });
         }
@@ -221,7 +221,7 @@ class SolanaService extends events_1.EventEmitter {
                 soldAt: listing.soldAt,
                 cancelledAt: listing.cancelledAt,
                 buyer: listing.buyer?.toString(),
-                cordaIdentityId: "", // Would be populated from metadata
+                identityId: "", // Would be populated from metadata
                 accessProof: undefined,
             };
         }
@@ -251,7 +251,7 @@ class SolanaService extends events_1.EventEmitter {
                 soldAt: listing.soldAt,
                 cancelledAt: listing.cancelledAt,
                 buyer: listing.buyer?.toString(),
-                cordaIdentityId: "", // Would be populated from metadata
+                identityId: "", // Would be populated from metadata
                 accessProof: undefined,
             }));
         }
@@ -280,7 +280,7 @@ class SolanaService extends events_1.EventEmitter {
                 soldAt: listing.soldAt,
                 cancelledAt: listing.cancelledAt,
                 buyer: listing.buyer?.toString(),
-                cordaIdentityId: "", // Would be populated from metadata
+                identityId: "", // Would be populated from metadata
                 accessProof: undefined,
             }));
         }
@@ -293,12 +293,12 @@ class SolanaService extends events_1.EventEmitter {
         }
     }
     /**
-     * Validate identity proof from Corda
+     * Validate identity proof from Storage backend
      */
     async validateIdentityProof(proof) {
         try {
             this.validateConnection();
-            // In a real implementation, this would validate the proof against Corda
+            // In a real implementation, this would validate the proof against Storage backend
             // For now, we'll do basic validation
             if (!proof.identityId ||
                 !proof.signature ||
@@ -328,7 +328,9 @@ class SolanaService extends events_1.EventEmitter {
             this.logger.error(`Failed to validate identity proof`, error);
             return {
                 isValid: false,
-                errors: [error instanceof Error ? error.message : String(error)],
+                errors: [
+                    error instanceof Error ? error.message : String(error),
+                ],
                 warnings: [],
             };
         }

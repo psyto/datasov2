@@ -3,7 +3,7 @@
  * DataSov Integration Layer API Gateway
  *
  * Provides REST API endpoints for cross-chain operations
- * between Corda and Solana networks.
+ * between Storage backend and Solana networks.
  */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -16,9 +16,9 @@ const helmet_1 = __importDefault(require("helmet"));
 const compression_1 = __importDefault(require("compression"));
 const Logger_1 = require("@/utils/Logger");
 class ApiGateway {
-    constructor(bridge, cordaService, solanaService, config) {
+    constructor(bridge, identityService, solanaService, config) {
         this.bridge = bridge;
-        this.cordaService = cordaService;
+        this.identityService = identityService;
         this.solanaService = solanaService;
         this.config = config;
         this.logger = new Logger_1.Logger("ApiGateway");
@@ -94,16 +94,16 @@ class ApiGateway {
      */
     async healthCheck(req, res) {
         try {
-            const cordaMetrics = this.cordaService.getMetrics();
+            const storageMetrics = await this.identityService.getMetrics();
             const solanaMetrics = await this.solanaService.getMetrics();
             const bridgeStatus = this.bridge.getStatus();
             const response = {
-                status: this.determineOverallStatus(cordaMetrics, solanaMetrics, bridgeStatus),
+                status: this.determineOverallStatus(storageMetrics, solanaMetrics, bridgeStatus),
                 timestamp: Date.now(),
                 services: {
-                    corda: {
-                        status: cordaMetrics.isConnected ? "up" : "down",
-                        responseTime: cordaMetrics.connectionTime,
+                    storage: {
+                        status: storageMetrics.isConnected ? "up" : "down",
+                        responseTime: storageMetrics.connectionTime || 0,
                         lastCheck: Date.now(),
                     },
                     solana: {
@@ -155,7 +155,7 @@ class ApiGateway {
     async getIdentity(req, res) {
         try {
             const { id } = req.params;
-            const identity = await this.cordaService.getIdentity(id);
+            const identity = await this.identityService.getIdentity(id);
             if (!identity) {
                 res.status(404).json(this.createApiResponse(null, "Identity not found"));
                 return;
@@ -375,7 +375,7 @@ class ApiGateway {
                 res.status(400).json(this.createApiResponse(null, "Access proof is required"));
                 return;
             }
-            const isValid = await this.cordaService.validateAccessProof(proof);
+            const isValid = await this.identityService.validateAccessProof(proof);
             res.json(this.createApiResponse({ isValid }, "Access proof validation completed"));
         }
         catch (error) {
@@ -431,14 +431,14 @@ class ApiGateway {
     /**
      * Determine overall system status
      */
-    determineOverallStatus(cordaMetrics, solanaMetrics, bridgeStatus) {
-        const cordaHealthy = cordaMetrics.isConnected;
+    determineOverallStatus(storageMetrics, solanaMetrics, bridgeStatus) {
+        const storageHealthy = storageMetrics.isConnected;
         const solanaHealthy = solanaMetrics.isConnected;
         const bridgeHealthy = bridgeStatus.isRunning;
-        if (cordaHealthy && solanaHealthy && bridgeHealthy) {
+        if (storageHealthy && solanaHealthy && bridgeHealthy) {
             return "healthy";
         }
-        else if (cordaHealthy || solanaHealthy) {
+        else if (storageHealthy || solanaHealthy) {
             return "degraded";
         }
         else {

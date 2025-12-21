@@ -2,12 +2,12 @@
  * DataSov Integration Layer
  *
  * Main entry point for the cross-chain integration service
- * that bridges Corda and Solana networks.
+ * that bridges Storage backend and Solana networks.
  */
 declare class DataSovIntegrationLayer {
     private logger;
     private config;
-    private cordaService;
+    private identityService;
     private solanaService;
     private bridge;
     private apiGateway;

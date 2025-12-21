@@ -6,7 +6,7 @@
  * for cross-chain communication between Corda and Solana.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BridgeError = exports.SolanaError = exports.CordaError = exports.ValidationError = exports.IntegrationError = exports.VerificationMethodType = exports.DataType = exports.PermissionType = exports.VerificationLevel = exports.IdentityStatus = exports.IdentityType = void 0;
+exports.BridgeError = exports.SolanaError = exports.CordaError = exports.ArweaveError = exports.StorageError = exports.ValidationError = exports.IntegrationError = exports.VerificationMethodType = exports.DataType = exports.PermissionType = exports.VerificationLevel = exports.IdentityStatus = exports.IdentityType = void 0;
 var IdentityType;
 (function (IdentityType) {
     IdentityType["NTT_DOCOMO_USER_ID"] = "NTT_DOCOMO_USER_ID";
@@ -64,7 +64,8 @@ var VerificationMethodType;
 // Error Types
 // ============================================================================
 class IntegrationError extends Error {
-    constructor(message, code, chain, details) {
+    constructor(message, code, chain, // Added Storage, kept Corda for compatibility
+    details) {
         super(message);
         this.code = code;
         this.chain = chain;
@@ -80,6 +81,21 @@ class ValidationError extends IntegrationError {
     }
 }
 exports.ValidationError = ValidationError;
+class StorageError extends IntegrationError {
+    constructor(message, details) {
+        super(message, "STORAGE_ERROR", "Storage", details);
+        this.name = "StorageError";
+    }
+}
+exports.StorageError = StorageError;
+class ArweaveError extends IntegrationError {
+    constructor(message, details) {
+        super(message, "ARWEAVE_ERROR", "Storage", details);
+        this.name = "ArweaveError";
+    }
+}
+exports.ArweaveError = ArweaveError;
+// Legacy CordaError (deprecated, kept for backward compatibility)
 class CordaError extends IntegrationError {
     constructor(message, details) {
         super(message, "CORDA_ERROR", "Corda", details);

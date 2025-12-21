@@ -2,21 +2,21 @@
  * DataSov Integration Layer API Gateway
  *
  * Provides REST API endpoints for cross-chain operations
- * between Corda and Solana networks.
+ * between Storage backend and Solana networks.
  */
 import express from "express";
 import { BridgeConfig } from "@/types";
 import { CrossChainBridge } from "@/services/CrossChainBridge";
-import { CordaService } from "@/services/CordaService";
+import { IdentityService } from "@/services/IdentityService";
 import { SolanaService } from "@/services/SolanaService";
 export declare class ApiGateway {
     private app;
     private bridge;
-    private cordaService;
+    private identityService;
     private solanaService;
     private config;
     private logger;
-    constructor(bridge: CrossChainBridge, cordaService: CordaService, solanaService: SolanaService, config: BridgeConfig);
+    constructor(bridge: CrossChainBridge, identityService: IdentityService, solanaService: SolanaService, config: BridgeConfig);
     /**
      * Setup middleware
      */

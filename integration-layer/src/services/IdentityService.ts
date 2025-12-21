@@ -505,11 +505,13 @@ export class IdentityService extends EventEmitter {
     /**
      * Get service metrics
      */
-    getMetrics(): Record<string, any> {
+    async getMetrics(): Promise<Record<string, any>> {
+        const storageMetrics = await this.storageService.getMetrics();
         return {
             isConnected: this.isConnected,
             storageBackend: "Arweave",
-            ...this.storageService.getMetrics(),
+            connectionTime: Date.now(),
+            ...storageMetrics,
         };
     }
 }

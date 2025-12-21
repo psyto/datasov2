@@ -53,6 +53,24 @@ export interface PersonalInfo {
     emailAddress?: string;
     encryptedData: Record<string, string>;
 }
+export interface EncryptedField {
+    encrypted: string;
+    iv: string;
+    authTag: string;
+}
+export interface EncryptedPersonalInfo {
+    fields: Record<string, EncryptedField>;
+    encryptionMetadata: {
+        algorithm: string;
+        keyDerivation: string;
+    };
+}
+export interface SelectiveDisclosure {
+    fields: string[];
+    encryptedFields: Record<string, EncryptedField>;
+    consumer: string;
+    timestamp: number;
+}
 export interface AccessPermission {
     consumer: string;
     permissionType: PermissionType;
@@ -100,7 +118,7 @@ export interface IdentityProof {
     owner: string;
     verificationLevel: VerificationLevel;
     verificationTimestamp: number;
-    cordaTransactionHash: string;
+    storageTransactionHash: string;
     signature: string;
     validUntil?: number;
     metadata: Record<string, any>;
@@ -115,12 +133,12 @@ export interface AccessProof {
     isActive: boolean;
     grantedBy: string;
     signature: string;
-    cordaTransactionHash: string;
+    storageTransactionHash: string;
 }
 export interface CrossChainEvent {
     eventId: string;
     timestamp: number;
-    chain: "Corda" | "Solana";
+    chain: "Storage" | "Solana" | "Corda";
     eventType: string;
     identityId: string;
     details: Record<string, any>;
@@ -128,11 +146,66 @@ export interface CrossChainEvent {
     signature: string;
 }
 export interface BridgeConfig {
-    corda: CordaConfig;
+    storage: StorageConfig;
     solana: SolanaConfig;
     bridge: BridgeSettings;
     security: SecurityConfig;
     monitoring: MonitoringConfig;
+}
+export interface StorageConfig {
+    type: "arweave" | "ipfs" | "ceramic" | "offline";
+    host?: string;
+    port?: number;
+    protocol?: "http" | "https";
+    timeout?: number;
+    logging?: boolean;
+    wallet?: any;
+    arweaveHost?: string;
+    arweavePort?: number;
+    arweaveProtocol?: "http" | "https";
+}
+export interface ArweaveConfig {
+    host: string;
+    port: number;
+    protocol: "http" | "https";
+    timeout: number;
+    logging: boolean;
+    wallet: any;
+}
+export interface ArweaveIdentityDocument {
+    documentType: "IDENTITY" | "KYC_VERIFICATION" | "ACCESS_PERMISSION";
+    version: string;
+    timestamp: number;
+    identityId: string;
+    owner: string;
+    identityProvider?: string;
+    identityType: IdentityType;
+    status?: IdentityStatus;
+    encryptedPersonalInfo?: any;
+    kycVerification?: {
+        verificationLevel: VerificationLevel;
+        verificationMethod?: VerificationMethod;
+        performedAt?: number;
+        validUntil?: number;
+        verificationProof?: string;
+        attestationSignature?: string;
+    };
+    accessPermission?: {
+        consumer: string;
+        permissionType: PermissionType;
+        dataTypes: DataType[];
+        grantedAt: number;
+        expiresAt?: number;
+    };
+    signatures?: {
+        owner?: string;
+        [key: string]: string | undefined;
+    };
+    metadata?: Record<string, any>;
+    arweaveMetadata?: {
+        transactionId: string;
+        blockHeight?: number;
+    };
 }
 export interface CordaConfig {
     rpcHost: string;
@@ -186,7 +259,7 @@ export interface DataListing {
     soldAt?: number;
     cancelledAt?: number;
     buyer?: string;
-    cordaIdentityId: string;
+    identityId: string;
     accessProof?: AccessProof;
 }
 export interface DataPurchase {
@@ -195,7 +268,7 @@ export interface DataPurchase {
     amount: BN;
     timestamp: number;
     transactionHash: string;
-    cordaIdentityId: string;
+    identityId: string;
     accessGranted: boolean;
 }
 export interface FeeDistribution {
@@ -227,7 +300,7 @@ export interface HealthCheckResponse {
     status: "healthy" | "degraded" | "unhealthy";
     timestamp: number;
     services: {
-        corda: ServiceStatus;
+        storage: ServiceStatus;
         solana: ServiceStatus;
         bridge: ServiceStatus;
         database: ServiceStatus;
@@ -244,6 +317,13 @@ export interface ServiceStatus {
     responseTime?: number;
     lastCheck: number;
     error?: string;
+}
+export interface StorageEvent {
+    type: "CONNECTED" | "DISCONNECTED" | "IDENTITY_REGISTERED" | "IDENTITY_VERIFIED" | "IDENTITY_UPDATED" | "IDENTITY_REVOKED" | "ACCESS_GRANTED" | "ACCESS_REVOKED";
+    identityId?: string;
+    timestamp: number;
+    transactionHash?: string;
+    details?: Record<string, any>;
 }
 export interface CordaEvent {
     type: "IDENTITY_REGISTERED" | "IDENTITY_VERIFIED" | "IDENTITY_UPDATED" | "IDENTITY_REVOKED" | "ACCESS_GRANTED" | "ACCESS_REVOKED";
@@ -285,18 +365,25 @@ export interface ProofValidationResult {
 }
 export interface StateSnapshot {
     timestamp: number;
-    cordaIdentities: DigitalIdentity[];
+    storageIdentities: DigitalIdentity[];
     solanaListings: DataListing[];
     activeBridges: number;
     lastSyncTime: number;
 }
 export declare class IntegrationError extends Error {
     code: string;
-    chain: "Corda" | "Solana" | "Bridge";
+    chain: "Storage" | "Solana" | "Bridge" | "Corda";
     details?: Record<string, any> | undefined;
-    constructor(message: string, code: string, chain: "Corda" | "Solana" | "Bridge", details?: Record<string, any> | undefined);
+    constructor(message: string, code: string, chain: "Storage" | "Solana" | "Bridge" | "Corda", // Added Storage, kept Corda for compatibility
+    details?: Record<string, any> | undefined);
 }
 export declare class ValidationError extends IntegrationError {
+    constructor(message: string, details?: Record<string, any>);
+}
+export declare class StorageError extends IntegrationError {
+    constructor(message: string, details?: Record<string, any>);
+}
+export declare class ArweaveError extends IntegrationError {
     constructor(message: string, details?: Record<string, any>);
 }
 export declare class CordaError extends IntegrationError {

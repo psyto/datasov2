@@ -146,7 +146,7 @@ export class SolanaService extends EventEmitter {
             );
             throw new SolanaError("Failed to create data listing", {
                 listingId,
-                cordaIdentityId,
+                identityId,
                 error: error instanceof Error ? error.message : String(error),
             });
         }
@@ -159,7 +159,7 @@ export class SolanaService extends EventEmitter {
         buyer: Keypair,
         listingId: number,
         tokenMint: PublicKey,
-        cordaIdentityId: string
+        identityId: string
     ): Promise<DataPurchase> {
         try {
             this.validateConnection();
@@ -182,14 +182,14 @@ export class SolanaService extends EventEmitter {
                 amount: listing.price,
                 timestamp: Date.now(),
                 transactionHash: tx,
-                cordaIdentityId,
+                identityId,
                 accessGranted: true,
             };
 
             // Emit event
             this.emit("solanaEvent", {
                 type: "DATA_PURCHASED",
-                identityId: identityId,
+                identityId,
                 timestamp: Date.now(),
                 transactionHash: tx,
                 details: purchase,
@@ -206,7 +206,7 @@ export class SolanaService extends EventEmitter {
             );
             throw new SolanaError("Failed to purchase data", {
                 listingId,
-                cordaIdentityId,
+                identityId,
                 error: error instanceof Error ? error.message : String(error),
             });
         }
@@ -219,7 +219,7 @@ export class SolanaService extends EventEmitter {
         owner: Keypair,
         listingId: number,
         newPrice: number,
-        cordaIdentityId: string
+        identityId: string
     ): Promise<string> {
         try {
             this.validateConnection();
@@ -254,7 +254,7 @@ export class SolanaService extends EventEmitter {
             );
             throw new SolanaError("Failed to update data listing", {
                 listingId,
-                cordaIdentityId,
+                identityId,
                 error: error instanceof Error ? error.message : String(error),
             });
         }
@@ -266,7 +266,7 @@ export class SolanaService extends EventEmitter {
     async cancelDataListing(
         owner: Keypair,
         listingId: number,
-        cordaIdentityId: string
+        identityId: string
     ): Promise<string> {
         try {
             this.validateConnection();
@@ -296,7 +296,7 @@ export class SolanaService extends EventEmitter {
             );
             throw new SolanaError("Failed to cancel data listing", {
                 listingId,
-                cordaIdentityId,
+                identityId,
                 error: error instanceof Error ? error.message : String(error),
             });
         }

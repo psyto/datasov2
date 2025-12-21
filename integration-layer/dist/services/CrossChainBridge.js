@@ -2,7 +2,7 @@
 /**
  * Cross-Chain Bridge Service
  *
- * Handles cross-chain communication between Corda and Solana,
+ * Handles cross-chain communication between Storage backend and Solana,
  * including identity proof validation, state synchronization, and event bridging.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -11,12 +11,12 @@ const types_1 = require("@/types");
 const Logger_1 = require("@/utils/Logger");
 const events_1 = require("events");
 class CrossChainBridge extends events_1.EventEmitter {
-    constructor(cordaService, solanaService, config) {
+    constructor(identityService, solanaService, config) {
         super();
         this.isRunning = false;
         this.syncRunning = false;
         this.eventHandlers = new Map();
-        this.cordaService = cordaService;
+        this.identityService = identityService;
         this.solanaService = solanaService;
         this.config = config;
         this.logger = new Logger_1.Logger("CrossChainBridge");
@@ -29,7 +29,7 @@ class CrossChainBridge extends events_1.EventEmitter {
         try {
             this.logger.info("Starting cross-chain bridge...");
             // Connect to both networks
-            await this.cordaService.connect();
+            await this.identityService.connect();
             await this.solanaService.connect();
             // Start event monitoring
             this.startEventMonitoring();
@@ -65,7 +65,7 @@ class CrossChainBridge extends events_1.EventEmitter {
                 this.syncInterval = undefined;
             }
             // Disconnect from networks
-            await this.cordaService.disconnect();
+            await this.identityService.disconnect();
             await this.solanaService.disconnect();
             this.logger.info("Cross-chain bridge stopped");
             this.emit("bridgeEvent", {
@@ -79,7 +79,7 @@ class CrossChainBridge extends events_1.EventEmitter {
         }
     }
     /**
-     * Validate identity proof from Corda for Solana usage
+     * Validate identity proof from Storage backend for Solana usage
      */
     async validateIdentityProof(proof) {
         try {
@@ -94,14 +94,14 @@ class CrossChainBridge extends events_1.EventEmitter {
                     errors: formatValidation.errors,
                 };
             }
-            // Validate with Corda service
-            const cordaValidation = await this.cordaService.validateIdentityProof(proof);
-            if (!cordaValidation.isValid) {
+            // Validate with Storage service
+            const storageValidation = await this.identityService.validateIdentityProof(proof);
+            if (!storageValidation.isValid) {
                 return {
                     isValid: false,
                     identityId: proof.identityId,
                     verificationLevel: proof.verificationLevel,
-                    errors: cordaValidation.errors,
+                    errors: storageValidation.errors,
                 };
             }
             // Validate with Solana service
@@ -145,13 +145,18 @@ class CrossChainBridge extends events_1.EventEmitter {
             this.emit("bridgeEvent", {
                 type: "PROOF_INVALID",
                 timestamp: Date.now(),
-                details: { identityId: proof.identityId, error: error instanceof Error ? error.message : String(error) },
+                details: {
+                    identityId: proof.identityId,
+                    error: error instanceof Error ? error.message : String(error),
+                },
             });
             return {
                 isValid: false,
                 identityId: proof.identityId,
                 verificationLevel: proof.verificationLevel,
-                errors: [error instanceof Error ? error.message : String(error)],
+                errors: [
+                    error instanceof Error ? error.message : String(error),
+                ],
             };
         }
     }
@@ -161,7 +166,7 @@ class CrossChainBridge extends events_1.EventEmitter {
     async generateIdentityProof(identityId) {
         try {
             this.logger.info(`Generating identity proof for ${identityId}`);
-            const proof = await this.cordaService.generateIdentityProof(identityId);
+            const proof = await this.identityService.generateIdentityProof(identityId);
             this.logger.info(`Identity proof generated for ${identityId}`);
             return proof;
         }
@@ -179,7 +184,7 @@ class CrossChainBridge extends events_1.EventEmitter {
     async generateAccessProof(identityId, consumer, dataType) {
         try {
             this.logger.info(`Generating access proof for ${identityId} -> ${consumer}`);
-            const proof = await this.cordaService.generateAccessProof(identityId, consumer, dataType);
+            const proof = await this.identityService.generateAccessProof(identityId, consumer, dataType);
             this.logger.info(`Access proof generated for ${identityId} -> ${consumer}`);
             return proof;
         }
@@ -194,29 +199,29 @@ class CrossChainBridge extends events_1.EventEmitter {
         }
     }
     /**
-     * Create data listing on Solana with Corda identity validation
+     * Create data listing on Solana with Storage identity validation
      */
-    async createDataListing(owner, listingId, price, dataType, description, cordaIdentityId, accessProof) {
+    async createDataListing(owner, listingId, price, dataType, description, identityId, accessProof) {
         try {
-            this.logger.info(`Creating data listing ${listingId} for identity ${cordaIdentityId}`);
+            this.logger.info(`Creating data listing ${listingId} for identity ${identityId}`);
             // Validate identity proof
-            const identityProof = await this.generateIdentityProof(cordaIdentityId);
+            const identityProof = await this.generateIdentityProof(identityId);
             const validation = await this.validateIdentityProof(identityProof);
             if (!validation.isValid) {
                 throw new types_1.ValidationError("Identity proof validation failed", {
-                    identityId: cordaIdentityId,
+                    identityId: identityId,
                     errors: validation.errors,
                 });
             }
             // Create listing on Solana
-            const tx = await this.solanaService.createDataListing(owner, listingId, price, dataType, description, cordaIdentityId, accessProof);
+            const tx = await this.solanaService.createDataListing(owner, listingId, price, dataType, description, identityId, accessProof);
             this.logger.info(`Data listing created successfully: ${tx}`);
             return tx;
         }
         catch (error) {
-            this.logger.error(`Failed to create data listing for identity ${cordaIdentityId}`, error);
+            this.logger.error(`Failed to create data listing for identity ${identityId}`, error);
             throw new types_1.BridgeError("Failed to create data listing", {
-                cordaIdentityId,
+                identityId,
                 listingId,
                 error: error instanceof Error ? error.message : String(error),
             });
@@ -225,18 +230,18 @@ class CrossChainBridge extends events_1.EventEmitter {
     /**
      * Purchase data with access validation
      */
-    async purchaseData(buyer, listingId, tokenMint, cordaIdentityId) {
+    async purchaseData(buyer, listingId, tokenMint, identityId) {
         try {
-            this.logger.info(`Purchasing data for listing ${listingId} by identity ${cordaIdentityId}`);
+            this.logger.info(`Purchasing data for listing ${listingId} by identity ${identityId}`);
             // Get listing details
             const listing = await this.solanaService.getDataListing(listingId);
             if (!listing) {
                 throw new types_1.BridgeError("Listing not found", { listingId });
             }
             // Validate access permissions
-            const accessProof = await this.generateAccessProof(cordaIdentityId, buyer.publicKey.toString(), listing.dataType);
+            const accessProof = await this.generateAccessProof(identityId, buyer.publicKey.toString(), listing.dataType);
             // Purchase data
-            const purchase = await this.solanaService.purchaseData(buyer, listingId, tokenMint, cordaIdentityId);
+            const purchase = await this.solanaService.purchaseData(buyer, listingId, tokenMint, identityId);
             this.logger.info(`Data purchased successfully for listing ${listingId}`);
             return purchase;
         }
@@ -244,13 +249,13 @@ class CrossChainBridge extends events_1.EventEmitter {
             this.logger.error(`Failed to purchase data for listing ${listingId}`, error);
             throw new types_1.BridgeError("Failed to purchase data", {
                 listingId,
-                cordaIdentityId,
+                identityId,
                 error: error instanceof Error ? error.message : String(error),
             });
         }
     }
     /**
-     * Synchronize state between Corda and Solana
+     * Synchronize state between Storage backend and Solana
      */
     async synchronizeState() {
         try {
@@ -259,10 +264,10 @@ class CrossChainBridge extends events_1.EventEmitter {
             let syncedCount = 0;
             let failedCount = 0;
             const errors = [];
-            // Get identities from Corda
-            const cordaIdentities = await this.cordaService.getIdentitiesByOwner("all");
+            // Get identities from Storage backend
+            const storageIdentities = await this.identityService.getIdentitiesByOwner("all");
             // Sync each identity to Solana
-            for (const identity of cordaIdentities) {
+            for (const identity of storageIdentities) {
                 try {
                     if (identity.status === "VERIFIED") {
                         // Generate identity proof
@@ -307,13 +312,17 @@ class CrossChainBridge extends events_1.EventEmitter {
             this.emit("bridgeEvent", {
                 type: "SYNC_FAILED",
                 timestamp: Date.now(),
-                details: { error: error instanceof Error ? error.message : String(error) },
+                details: {
+                    error: error instanceof Error ? error.message : String(error),
+                },
             });
             return {
                 success: false,
                 syncedCount: 0,
                 failedCount: 1,
-                errors: [error instanceof Error ? error.message : String(error)],
+                errors: [
+                    error instanceof Error ? error.message : String(error),
+                ],
                 duration: 0,
             };
         }
@@ -323,11 +332,11 @@ class CrossChainBridge extends events_1.EventEmitter {
      */
     async getStateSnapshot() {
         try {
-            const cordaIdentities = await this.cordaService.getIdentitiesByOwner("all");
+            const storageIdentities = await this.identityService.getIdentitiesByOwner("all");
             const solanaListings = await this.solanaService.getActiveDataListings();
             return {
                 timestamp: Date.now(),
-                cordaIdentities,
+                storageIdentities,
                 solanaListings,
                 activeBridges: this.isRunning ? 1 : 0,
                 lastSyncTime: Date.now(),
@@ -368,9 +377,9 @@ class CrossChainBridge extends events_1.EventEmitter {
      * Setup event handlers for cross-chain communication
      */
     setupEventHandlers() {
-        // Handle Corda events
-        this.cordaService.on("cordaEvent", (event) => {
-            this.handleCordaEvent(event);
+        // Handle Storage events
+        this.identityService.on("storageEvent", (event) => {
+            this.handleStorageEvent(event);
         });
         // Handle Solana events
         this.solanaService.on("solanaEvent", (event) => {
@@ -378,11 +387,13 @@ class CrossChainBridge extends events_1.EventEmitter {
         });
     }
     /**
-     * Handle Corda events
+     * Handle Storage events
      */
-    async handleCordaEvent(event) {
+    async handleStorageEvent(event) {
         try {
-            this.logger.info(`Handling Corda event: ${event.type} for identity ${event.identityId}`);
+            if (!event.identityId)
+                return;
+            this.logger.info(`Handling Storage event: ${event.type} for identity ${event.identityId}`);
             switch (event.type) {
                 case "IDENTITY_VERIFIED":
                     // Enable data trading for this identity
@@ -394,27 +405,27 @@ class CrossChainBridge extends events_1.EventEmitter {
                     break;
                 case "ACCESS_GRANTED":
                     // Update access permissions
-                    await this.updateAccessPermissions(event.identityId, event.details);
+                    await this.updateAccessPermissions(event.identityId, event.details || {});
                     break;
                 case "ACCESS_REVOKED":
                     // Revoke access permissions
-                    await this.revokeAccessPermissions(event.identityId, event.details);
+                    await this.revokeAccessPermissions(event.identityId, event.details || {});
                     break;
             }
             // Emit cross-chain event
             this.emit("crossChainEvent", {
-                eventId: `corda_${event.timestamp}`,
+                eventId: `storage_${event.timestamp}`,
                 timestamp: event.timestamp,
-                chain: "Corda",
+                chain: "Storage",
                 eventType: event.type,
                 identityId: event.identityId,
-                details: event.details,
+                details: event.details || {},
                 crossChainReference: event.transactionHash,
-                signature: "corda_signature",
+                signature: "storage_signature",
             });
         }
         catch (error) {
-            this.logger.error(`Failed to handle Corda event ${event.type}`, error);
+            this.logger.error(`Failed to handle Storage event ${event.type}`, error);
         }
     }
     /**
@@ -425,7 +436,7 @@ class CrossChainBridge extends events_1.EventEmitter {
             this.logger.info(`Handling Solana event: ${event.type} for identity ${event.identityId}`);
             switch (event.type) {
                 case "DATA_PURCHASED":
-                    // Update access log on Corda
+                    // Update access log on Storage backend
                     await this.updateAccessLog(event.identityId, event.details);
                     break;
                 case "FEE_DISTRIBUTED":
@@ -483,8 +494,8 @@ class CrossChainBridge extends events_1.EventEmitter {
             errors.push("Missing verificationLevel");
         if (!proof.signature)
             errors.push("Missing signature");
-        if (!proof.cordaTransactionHash)
-            errors.push("Missing cordaTransactionHash");
+        if (!proof.storageTransactionHash)
+            errors.push("Missing storageTransactionHash");
         return {
             isValid: errors.length === 0,
             errors,
@@ -523,14 +534,14 @@ class CrossChainBridge extends events_1.EventEmitter {
      */
     async updateAccessLog(identityId, details) {
         this.logger.info(`Updating access log for identity ${identityId}`);
-        // Implementation would update access log on Corda
+        // Implementation would update access log on Storage backend
     }
     /**
      * Record fee distribution
      */
     async recordFeeDistribution(identityId, details) {
         this.logger.info(`Recording fee distribution for identity ${identityId}`);
-        // Implementation would record fee distribution on Corda
+        // Implementation would record fee distribution on Storage backend
     }
     /**
      * Get bridge status
@@ -538,7 +549,7 @@ class CrossChainBridge extends events_1.EventEmitter {
     getStatus() {
         return {
             isRunning: this.isRunning,
-            cordaHealthy: this.cordaService.isHealthy(),
+            storageHealthy: this.identityService.isHealthy(),
             solanaHealthy: this.solanaService.isHealthy(),
             config: this.config.bridge,
         };

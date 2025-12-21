@@ -1,16 +1,16 @@
 /**
  * Cross-Chain Bridge Service
  *
- * Handles cross-chain communication between Corda and Solana,
+ * Handles cross-chain communication between Storage backend and Solana,
  * including identity proof validation, state synchronization, and event bridging.
  */
 import { IdentityProof, AccessProof, SyncResult, ProofValidationResult, StateSnapshot, BridgeConfig } from "@/types";
-import { CordaService } from "./CordaService";
+import { IdentityService } from "./IdentityService";
 import { SolanaService } from "./SolanaService";
 import { EventEmitter } from "events";
 import { Keypair, PublicKey } from "@solana/web3.js";
 export declare class CrossChainBridge extends EventEmitter {
-    private cordaService;
+    private identityService;
     private solanaService;
     private config;
     private logger;
@@ -19,7 +19,7 @@ export declare class CrossChainBridge extends EventEmitter {
     private lastSyncTime?;
     private syncInterval?;
     private eventHandlers;
-    constructor(cordaService: CordaService, solanaService: SolanaService, config: BridgeConfig);
+    constructor(identityService: IdentityService, solanaService: SolanaService, config: BridgeConfig);
     /**
      * Start the cross-chain bridge
      */
@@ -29,7 +29,7 @@ export declare class CrossChainBridge extends EventEmitter {
      */
     stop(): Promise<void>;
     /**
-     * Validate identity proof from Corda for Solana usage
+     * Validate identity proof from Storage backend for Solana usage
      */
     validateIdentityProof(proof: IdentityProof): Promise<ProofValidationResult>;
     /**
@@ -41,15 +41,15 @@ export declare class CrossChainBridge extends EventEmitter {
      */
     generateAccessProof(identityId: string, consumer: string, dataType: string): Promise<AccessProof>;
     /**
-     * Create data listing on Solana with Corda identity validation
+     * Create data listing on Solana with Storage identity validation
      */
-    createDataListing(owner: Keypair, listingId: number, price: number, dataType: string, description: string, cordaIdentityId: string, accessProof?: AccessProof): Promise<string>;
+    createDataListing(owner: Keypair, listingId: number, price: number, dataType: string, description: string, identityId: string, accessProof?: AccessProof): Promise<string>;
     /**
      * Purchase data with access validation
      */
-    purchaseData(buyer: Keypair, listingId: number, tokenMint: PublicKey, cordaIdentityId: string): Promise<any>;
+    purchaseData(buyer: Keypair, listingId: number, tokenMint: PublicKey, identityId: string): Promise<any>;
     /**
-     * Synchronize state between Corda and Solana
+     * Synchronize state between Storage backend and Solana
      */
     synchronizeState(): Promise<SyncResult>;
     /**
@@ -72,9 +72,9 @@ export declare class CrossChainBridge extends EventEmitter {
      */
     private setupEventHandlers;
     /**
-     * Handle Corda events
+     * Handle Storage events
      */
-    private handleCordaEvent;
+    private handleStorageEvent;
     /**
      * Handle Solana events
      */

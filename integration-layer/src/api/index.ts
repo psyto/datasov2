@@ -139,7 +139,7 @@ export class ApiGateway {
         res: express.Response
     ): Promise<void> {
         try {
-            const storageMetrics = this.identityService.getMetrics();
+            const storageMetrics = await this.identityService.getMetrics();
             const solanaMetrics = await this.solanaService.getMetrics();
             const bridgeStatus = this.bridge.getStatus();
 
