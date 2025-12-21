@@ -1,12 +1,16 @@
 # DataSov Solana Component
 
-A comprehensive Solana-based data marketplace that enables users to tokenize and trade their anonymized personal data as NFTs. This component is part of the DataSov hybrid blockchain solution that combines Arweave's permanent identity storage with Solana's high-performance data marketplace.
+A comprehensive Solana-based data marketplace that enables data owners to monetize their anonymized personal data while retaining full ownership. This component powers the DataSov platform's core monetization mechanism, allowing users to tokenize and trade their data as NFTs with transparent pricing and direct revenue distribution. Built for the AI economy, it provides structured, verified datasets for AI/ML model training while ensuring fair compensation for data providers.
 
 ## 🚀 Features
 
+-   **Data Monetization**: Enable data owners to earn revenue from their anonymized personal data
+-   **Data Ownership**: Full ownership retention - data owners control access and pricing
 -   **Data Tokenization**: Convert anonymized personal data into tradeable NFTs
--   **Marketplace Trading**: Buy and sell data NFTs with automatic fee collection
+-   **Marketplace Trading**: Buy and sell data NFTs with transparent pricing and automatic fee collection
+-   **Direct Revenue Distribution**: Data owners receive direct payment when their data is purchased
 -   **Multiple Data Types**: Support for location history, app usage, purchase history, health data, and more
+-   **AI Economy Ready**: Structured data format optimized for AI/ML model consumption
 -   **Fee Management**: Configurable marketplace fees with automatic distribution
 -   **Secure Transactions**: Built on Solana's secure and fast blockchain
 -   **TypeScript SDK**: Complete client library for easy integration
@@ -250,4 +254,4 @@ For questions and support:
 
 ---
 
-**DataSov** - Empowering users with data ownership through hybrid blockchain technology.
+**DataSov** - Empowering data owners to monetize their data while retaining ownership, powering the ethical AI economy.

@@ -1,18 +1,25 @@
-# DataSov: Distributed Storage-Solana Decentralized Architecture
+# DataSov: Data Ownership & Monetization Architecture for the AI Economy
 
-This document explains how the distributed storage layer (currently Arweave) and Solana components work together in the DataSov fully decentralized blockchain system to provide permanent identity storage, privacy-preserving encryption, and efficient data trading. The architecture is designed to support multiple distributed storage backends and offline storage options.
+This document explains how DataSov enables data owners to monetize their data while retaining full ownership and control. The system combines distributed storage (currently Arweave) and Solana to create a decentralized marketplace that powers the AI economy through ethical data sourcing, transparent monetization, and privacy-preserving data trading. The architecture is designed to support multiple distributed storage backends and offline storage options.
 
 ## 🔗 Overview
 
-The DataSov system uses a **fully decentralized hybrid blockchain architecture** that leverages the unique strengths of distributed storage and Solana to create a powerful solution for digital identity management and data ownership without requiring permissioned networks.
+The DataSov system uses a **fully decentralized hybrid blockchain architecture** that empowers data owners to monetize their data while maintaining full ownership and control. This creates a sustainable, ethical foundation for the AI economy where data providers are fairly compensated and data consumers have access to high-quality, verified datasets.
 
 ### Core Philosophy
 
+**Data Ownership & Monetization**
+-   **User-Owned Data**: Data owners retain full control and ownership of their data
+-   **Transparent Monetization**: Direct revenue distribution to data owners through marketplace trading
+-   **Privacy-Preserving**: Client-side encryption ensures personal information never leaves user control
+-   **AI Economy Ready**: Structured data format optimized for AI/ML model training and inference
+
+**Technical Architecture**
 -   **Distributed Storage Layer**: Provides permanent, immutable storage for identity documents and access records. Currently supports Arweave, with architecture designed to support multiple backends:
     -   **Distributed Storage**: Arweave, IPFS, Ceramic, etc.
     -   **Offline Storage**: Local storage, encrypted file systems, etc.
     -   **Pluggable Interface**: Easy integration of new storage providers
--   **Solana**: Manages high-performance, on-chain identity state and data trading
+-   **Solana Marketplace**: High-performance, on-chain data trading with transparent pricing and fee distribution
 -   **Client-Side Encryption**: Privacy through cryptography, not network design
 -   **KYC Oracle Network**: Decentralized identity verification with multi-signature support
 
@@ -721,16 +728,32 @@ The architecture is designed to support multiple storage backends:
 
 ## 🎯 Conclusion
 
-The DataSov decentralized architecture successfully combines flexible distributed storage with Solana's high-performance capabilities to create a fully decentralized solution for digital identity and data ownership. By using client-side encryption and decentralized KYC oracles, the system provides:
+The DataSov decentralized architecture successfully combines flexible distributed storage with Solana's high-performance capabilities to create a fully decentralized solution for data ownership and monetization in the AI economy. By using client-side encryption and decentralized KYC oracles, the system provides:
+
+### For Data Owners
+
+-   **Data Ownership**: Complete ownership and control of personal data
+-   **Monetization**: Transparent revenue generation from anonymized data trading
+-   **Privacy**: Military-grade encryption with selective disclosure
+-   **Fair Compensation**: Direct payment when data is used
+
+### For the AI Economy
+
+-   **Ethical Data Sourcing**: Transparent consent and fair compensation
+-   **High-Quality Data**: Verified, structured datasets from verified identities
+-   **Diverse Datasets**: Access to anonymized data across multiple categories
+-   **Regulatory Compliance**: Built-in KYC/AML and audit trails
+
+### Technical Excellence
 
 -   **Full Decentralization**: No permissioned networks or central authorities
--   **Privacy**: Military-grade encryption with selective disclosure
 -   **Flexible Storage**: Support for multiple distributed storage backends and offline storage options
 -   **Permanence**: Immutable audit trail on selected storage backend
 -   **Performance**: High-throughput trading on Solana
 -   **Cost Efficiency**: 100x cheaper than permissioned alternatives
--   **User Control**: Complete ownership of identity and data
--   **Future-Proof**: Architecture designed to easily integrate new storage solutions
+-   **Future-Proof**: Architecture designed to easily integrate new storage solutions and AI/ML frameworks
+
+**DataSov** - Empowering data owners and powering the ethical AI economy through decentralized data ownership and monetization.
 
 This architecture enables true data sovereignty while maintaining the security, privacy, and compliance features required for real-world applications.
 

@@ -1,6 +1,6 @@
-# DataSov: Hybrid Digital Identity and Data Ownership
+# DataSov: Data Ownership & Monetization Platform for the AI Economy
 
-DataSov combines distributed storage (e.g., Arweave) for permanent identity storage and Solana for high-throughput data ownership trading. The architecture is designed to support multiple distributed storage backends and offline storage options. This repo contains a minimal end-to-end demo environment and component implementations.
+DataSov empowers data owners to monetize their data while retaining full ownership and control. Built for the AI economy, DataSov provides a decentralized marketplace where individuals can tokenize and trade their anonymized personal data, ensuring they benefit from the value their data creates. The platform combines distributed storage (e.g., Arweave) for permanent identity storage and Solana for high-throughput data marketplace operations. The architecture is designed to support multiple distributed storage backends and offline storage options.
 
 ---
 
@@ -104,25 +104,37 @@ This runs a set of HTTP checks against the API and validates frontend availabili
 
 ## Architecture Overview
 
-1. Distributed Storage Layer: Permanent Identity Storage
+DataSov enables data owners to:
+
+-   **Retain Ownership**: Your data remains yours - you control who accesses it and how
+-   **Monetize Data**: Earn from your anonymized data through transparent marketplace trading
+-   **Power AI Economy**: Provide high-quality, verified data to AI/ML models while maintaining privacy
+-   **Maintain Privacy**: Client-side encryption ensures your personal information stays private
+
+### Core Components
+
+1. **Distributed Storage Layer**: Permanent Identity & Data Storage
 
 -   Identity Registration (KYC-friendly)
 -   Immutable audit trail
 -   Client-side encryption
 -   **Storage Backends**: Currently supports Arweave, designed to support multiple distributed storage options (IPFS, Ceramic, etc.) and offline storage
 
-2. Solana Component: Data Marketplace
+2. **Solana Component**: Data Marketplace & Monetization
 
 -   Tokenized data ownership (NFT-like)
--   Listing, purchase, fee distribution
+-   Transparent pricing and fee distribution
+-   Direct revenue to data owners
 -   Identity verification and access control
+-   **AI Economy Integration**: Structured data format optimized for AI/ML consumption
 
-3. Integration Layer
+3. **Integration Layer**
 
 -   Identity proof validation
 -   State synchronization
 -   REST API and health/status endpoints
 -   **Storage Abstraction**: Pluggable storage backend interface for easy integration of new storage providers
+-   **Monetization Engine**: Automated revenue distribution and payment processing
 
 ---
 
@@ -146,10 +158,25 @@ This is a lightweight UI demo using mock data.
 
 ---
 
-## Why Distributed Storage + Solana
+## Why DataSov for the AI Economy
 
--   **Flexible Storage**: Supports multiple distributed storage backends (Arweave, IPFS, Ceramic, etc.) and offline storage options for maximum flexibility and user choice.
--   **Permanent Storage + Privacy**: Distributed storage provides immutable identity records with client-side encryption.
--   **High Throughput**: Solana enables fast, low-cost data marketplace operations.
--   **Fully Decentralized**: No permissioned networks required - works with any compatible storage backend.
--   **Future-Proof**: Architecture designed to easily integrate new storage solutions as they emerge.
+### For Data Owners
+
+-   **Own Your Data**: Full ownership and control - you decide what to share and with whom
+-   **Monetize Your Data**: Earn revenue from your anonymized personal data through transparent marketplace trading
+-   **Privacy First**: Client-side encryption ensures your personal information never leaves your control
+-   **Fair Compensation**: Direct revenue distribution - you get paid when your data is used
+
+### For the AI Economy
+
+-   **High-Quality Data**: Verified, structured data from verified identities
+-   **Ethical Data Sourcing**: Transparent consent and fair compensation for data providers
+-   **Diverse Datasets**: Access to anonymized data across multiple categories (location, health, behavior, etc.)
+-   **Regulatory Compliance**: Built-in KYC/AML compliance and audit trails
+
+### Technical Advantages
+
+-   **Flexible Storage**: Supports multiple distributed storage backends (Arweave, IPFS, Ceramic, etc.) and offline storage options
+-   **High Throughput**: Solana enables fast, low-cost data marketplace operations
+-   **Fully Decentralized**: No permissioned networks required - works with any compatible storage backend
+-   **Future-Proof**: Architecture designed to easily integrate new storage solutions and AI/ML frameworks
