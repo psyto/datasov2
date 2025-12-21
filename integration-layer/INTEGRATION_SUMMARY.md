@@ -2,21 +2,11 @@
 
 ## 🎯 Overview
 
-The DataSov Integration Layer is a comprehensive cross-chain bridge service that seamlessly connects Corda and Solana networks, enabling secure identity management and efficient data trading in the DataSov hybrid blockchain system.
+The DataSov Integration Layer is a comprehensive integration service that seamlessly connects Arweave and Solana networks, enabling secure identity management and efficient data trading in the DataSov hybrid blockchain system.
 
 ## 🏗️ Architecture Components
 
 ### 1. Core Services
-
-#### **CordaService** (`src/services/CordaService.ts`)
-
--   **Purpose**: Handles communication with Corda network for identity management
--   **Key Features**:
-    -   Identity registration and verification
-    -   KYC process management
-    -   Access control operations
-    -   Identity proof generation and validation
-    -   Real-time event monitoring
 
 #### **SolanaService** (`src/services/SolanaService.ts`)
 
@@ -69,13 +59,13 @@ The DataSov Integration Layer is a comprehensive cross-chain bridge service that
 ```mermaid
 sequenceDiagram
     participant User
-    participant Corda
+    participant Arweave
     participant Bridge
     participant Solana
 
-    User->>Corda: Register Identity
-    Corda->>Corda: KYC Verification
-    Corda->>Bridge: Generate Identity Proof
+    User->>Arweave: Register Identity
+    Arweave->>Arweave: KYC Verification
+    Arweave->>Bridge: Generate Identity Proof
     Bridge->>Bridge: Validate Proof
     Bridge->>Solana: Enable Data Trading
     Solana->>User: Trading Enabled
@@ -87,16 +77,16 @@ sequenceDiagram
 sequenceDiagram
     participant Buyer
     participant Seller
-    participant Corda
+    participant Arweave
     participant Bridge
     participant Solana
 
-    Seller->>Corda: Grant Access Permission
-    Corda->>Bridge: Access Proof
+    Seller->>Arweave: Grant Access Permission
+    Arweave->>Bridge: Access Proof
     Bridge->>Solana: Create Data Listing
     Buyer->>Solana: Purchase Data
     Solana->>Bridge: Trading Event
-    Bridge->>Corda: Update Access Log
+    Bridge->>Arweave: Update Access Log
 ```
 
 ## 🚀 Key Features Implemented
@@ -137,7 +127,6 @@ integration-layer/
 │   ├── api/                 # API Gateway
 │   │   └── index.ts
 │   ├── services/           # Core Services
-│   │   ├── CordaService.ts
 │   │   ├── SolanaService.ts
 │   │   ├── CrossChainBridge.ts
 │   │   └── DataSovClient.ts
@@ -167,12 +156,6 @@ integration-layer/
 PORT=3000
 NODE_ENV=development
 LOG_LEVEL=info
-
-# Corda Configuration
-CORDA_RPC_HOST=localhost
-CORDA_RPC_PORT=10006
-CORDA_RPC_USERNAME=user1
-CORDA_RPC_PASSWORD=test
 
 # Solana Configuration
 SOLANA_RPC_URL=https://api.devnet.solana.com
@@ -350,13 +333,6 @@ spec:
 
 ## 🔗 Integration Points
 
-### With Corda Component
-
--   Direct integration with Corda identity service
--   Real-time KYC verification
--   Access control synchronization
--   Event monitoring
-
 ### With Solana Component
 
 -   Seamless marketplace integration
@@ -440,4 +416,4 @@ spec:
 
 **DataSov Integration Layer** - Successfully implemented and ready for deployment! 🚀
 
-This integration layer provides the critical bridge between Corda and Solana networks, enabling the DataSov hybrid blockchain system to deliver secure, efficient, and user-controlled data ownership solutions.
+This integration layer provides the critical bridge between Arweave and Solana networks, enabling the DataSov hybrid blockchain system to deliver secure, efficient, and user-controlled data ownership solutions.

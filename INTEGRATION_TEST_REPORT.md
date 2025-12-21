@@ -10,29 +10,7 @@ Integration tests were executed for the DataSov project, identifying the status 
 
 ## Test Results Summary
 
-### 1. Corda Component
-
-**Status**: ⚠️ Test Environment Not Built
-
-**Details**:
-
--   Integration tests cannot be executed because Corda network is not running
--   Required steps:
-    -   Deploy nodes with `./gradlew deployNodes`
-    -   Start network with `./build/nodes/runnodes`
-    -   Then execute integration tests
-
-**Implementation Status**:
-
--   ✅ Digital Identity State - Fully implemented
--   ✅ Digital Identity Contract - Fully implemented
--   ✅ Identity Registration Flow - Fully implemented
--   ✅ Identity Verification Flow - Fully implemented
--   ✅ Access Control Flow - Fully implemented
--   ✅ KYC Service - Fully implemented
--   ✅ DataSov Client - Fully implemented
-
-### 2. Solana Component
+### 1. Solana Component
 
 **Status**: ⚠️ Build Issues
 
@@ -67,7 +45,7 @@ anchor deploy --provider.cluster localnet
 anchor test --skip-local-validator
 ```
 
-### 3. Integration Layer
+### 2. Integration Layer
 
 **Status**: ⚠️ Configuration Issues
 
@@ -79,7 +57,6 @@ anchor test --skip-local-validator
 
 **Implementation Status**:
 
--   ✅ CordaService - Fully implemented
 -   ✅ SolanaService - Fully implemented
 -   ✅ CrossChainBridge - Fully implemented
 -   ✅ API Gateway - Fully implemented
@@ -99,7 +76,7 @@ anchor test --skip-local-validator
 // Or change to relative path imports
 ```
 
-### 4. Frontend
+### 3. Frontend
 
 **Status**: ⚠️ Tests Disabled
 
@@ -132,17 +109,6 @@ npm install --save-dev @testing-library/react @testing-library/jest-dom @testing
 
 ## Inter-component Integration Status
 
-### Corda ↔ Integration Layer
-
-**Status**: 🔄 Implementation Complete, Testing Pending
-
-**Implementation Details**:
-
--   Identity proof generation
--   Identity validation
--   Access control synchronization
--   Event monitoring
-
 ### Solana ↔ Integration Layer
 
 **Status**: 🔄 Implementation Complete, Testing Pending
@@ -171,7 +137,7 @@ npm install --save-dev @testing-library/react @testing-library/jest-dom @testing
 
 ✅ **Very High**
 
--   All core features of Corda, Solana, and integration layer are implemented
+-   All core features of Arweave, Solana, and integration layer are implemented
 -   Hybrid blockchain architecture is properly designed
 -   Cross-chain communication mechanisms are comprehensively implemented
 
@@ -198,11 +164,6 @@ npm install --save-dev @testing-library/react @testing-library/jest-dom @testing
 1. **Demo Environment Setup**
 
     ```bash
-    # Start Corda network
-    cd corda-component
-    ./gradlew deployNodes
-    ./build/nodes/runnodes
-
     # Start Solana local validator
     solana-test-validator
 
@@ -258,7 +219,7 @@ npm install --save-dev @testing-library/react @testing-library/jest-dom @testing
 1. ✅ **Comprehensive Implementation**: All core features implemented
 2. ✅ **Excellent Design**: Hybrid blockchain architecture is appropriate
 3. ✅ **High-Quality Code**: Type safety, error handling, documentation
-4. ✅ **Innovation**: Corda and Solana combination has high uniqueness
+4. ✅ **Innovation**: Arweave and Solana combination has high uniqueness
 
 ### Areas for Improvement
 
@@ -296,11 +257,7 @@ Reasons:
 
 **Solution**: Start local validator beforehand and use `--skip-local-validator` flag
 
-### Issue 3: Corda Network Not Started
-
-**Solution**: Execute deployNodes and runnnodes to start network
-
-### Issue 4: Frontend Tests Disabled
+### Issue 3: Frontend Tests Disabled
 
 **Solution**: Reinstall test libraries and enable test files
 

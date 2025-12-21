@@ -50,16 +50,7 @@ Demo credentials:
 
 ### ⚠️ Components with Partial Issues
 
-#### 3. Corda Network
-
--   **Status**: ⚠️ Not Started
--   **Issue**: Corda plugin dependency problems
--   **Details**:
-    -   Gradle 9.1.0 and Corda plugin compatibility issues
-    -   `net.corda.plugins.cordapp` plugin not found
-    -   Java 25 and Corda 4.9 compatibility issues
-
-#### 4. Solana Component
+#### 3. Solana Component
 
 -   **Status**: ⚠️ Build Issues
 -   **Issue**: Anchor CLI version mismatch
@@ -68,7 +59,7 @@ Demo credentials:
     -   Actual version: 0.31.1
     -   Rust compiler version issues
 
-#### 5. Integration Layer (Full API)
+#### 4. Integration Layer (Full API)
 
 -   **Status**: ⚠️ Uses TS path aliases
 -   **Issue**: Runtime cannot resolve `@/...` imports in `dist/index.js` in vanilla Node
@@ -154,14 +145,14 @@ solana balance
 
 ### ⚠️ Features with Limitations
 
-1. **Corda Integration**
+1. **Identity Integration**
 
     - Identity authentication (can be substituted with mock data)
     - Access control (can be simulated in frontend)
 
 2. **Cross-chain Integration**
     - Demo uses mocked proofs and sync via Simple API
-    - Full sync requires live Corda/Solana environments
+    - Full sync requires live Arweave/Solana environments
 
 ## Demo Strategy for Hackathon
 
@@ -176,7 +167,7 @@ solana balance
 2. **Solution Introduction** (3 minutes)
 
     - Hybrid blockchain architecture
-    - Corda's security and privacy
+    - Arweave's permanent storage and privacy
     - Solana's high-speed, low-cost transactions
 
 3. **Technical Demo** (5 minutes)
@@ -207,15 +198,7 @@ solana balance
 
 ## Technical Challenges and Solutions
 
-### Challenge 1: Corda Network Startup
-
-**Problem**: Corda plugin dependencies
-**Solutions**:
-
--   Complete Corda development environment setup
--   Or, demo with mock data
-
-### Challenge 2: Solana Component Build
+### Challenge 1: Solana Component Build
 
 **Problem**: Anchor CLI version mismatch
 **Solutions**:
@@ -223,7 +206,7 @@ solana balance
 -   Install correct Anchor CLI version
 -   Or, use existing IDL files
 
-### Challenge 3: Integration Layer Build
+### Challenge 2: Integration Layer Build
 
 **Problem**: TypeScript compilation errors
 **Solutions**:
@@ -252,7 +235,7 @@ solana balance
 1. **Integration Layer (Full API)**
 
     - Configure runtime alias resolution or remove path aliases for `dist/index.js`
-    - Connect to live Corda/Solana backends
+    - Connect to live Arweave/Solana backends
 
 2. **Solana Component Fixes**
     - Unify Anchor CLI versions
@@ -261,10 +244,10 @@ solana balance
 
 ### Medium to Long-term Improvements
 
-1. **Corda Network Construction**
+1. **Arweave Integration**
 
-    - Complete development environment setup
-    - Node startup and configuration
+    - Complete Arweave development environment setup
+    - Identity document storage configuration
     - Actual identity authentication
 
 2. **End-to-End Testing**
@@ -278,7 +261,6 @@ solana balance
 
 -   ✅ **Frontend**: Fully functional
 -   ✅ **Solana Network**: Running normally
--   ⚠️ **Corda Network**: Configuration issues
 -   ⚠️ **Integration Layer**: Build errors
 -   ✅ **Demo Data**: Ready
 
@@ -297,7 +279,7 @@ Reasons:
 
 1. **Immediate**: Prepare frontend demo
 2. **Short-term**: Fix integration layer
-3. **Medium to long-term**: Build Corda network
+3. **Medium to long-term**: Build Arweave integration
 
 ---
 

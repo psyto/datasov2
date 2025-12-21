@@ -1,6 +1,6 @@
 # DataSov Solana Component
 
-A comprehensive Solana-based data marketplace that enables users to tokenize and trade their anonymized personal data as NFTs. This component is part of the DataSov hybrid blockchain solution that combines Corda's secure identity management with Solana's high-performance data marketplace.
+A comprehensive Solana-based data marketplace that enables users to tokenize and trade their anonymized personal data as NFTs. This component is part of the DataSov hybrid blockchain solution that combines Arweave's permanent identity storage with Solana's high-performance data marketplace.
 
 ## 🚀 Features
 
@@ -237,8 +237,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🔗 Related Projects
 
--   **DataSov Corda Component**: Identity management on Corda
--   **DataSov Integration Layer**: Bridge between Corda and Solana
+-   **DataSov Integration Layer**: Integration service for Arweave and Solana
 -   **DataSov Frontend**: User interface for the complete system
 
 ## 📞 Support
