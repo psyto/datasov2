@@ -1,6 +1,6 @@
 # DataSov: Hybrid Digital Identity and Data Ownership
 
-DataSov combines Corda for privacy-preserving Digital Identity (DID) and Solana for high-throughput data ownership trading. This repo contains a minimal end-to-end demo environment and component implementations.
+DataSov combines Arweave for permanent identity storage and Solana for high-throughput data ownership trading. This repo contains a minimal end-to-end demo environment and component implementations.
 
 ---
 
@@ -41,9 +41,8 @@ Note: The frontend proxies API requests to http://localhost:3001 (see `frontend/
 
 ## Components
 
--   `corda-component/`: Kotlin contracts, clients, and workflows for DID and access control on Corda.
 -   `solana-component/`: Anchor-based program and TypeScript SDK for data marketplace operations on Solana.
--   `integration-layer/`: TypeScript services that bridge Corda and Solana. Includes a production-like API and a demo `simple-api` for local runs.
+-   `integration-layer/`: TypeScript services for identity and data marketplace operations. Includes a production-like API and a demo `simple-api` for local runs.
 -   `frontend/`: React (CRA + Tailwind) dashboard for identities, marketplace, analytics.
 -   `DataSovMobile/`: Lightweight Expo app (mobile UI demo). Also runnable on web via Expo.
 
@@ -68,14 +67,9 @@ cd .. && node integration-test.js
 
 ### B) Full Stack (advanced)
 
-Start real networks first, then use the full Integration Layer API (`dist/index.js`). This requires local Corda and Solana environments.
+Start real networks first, then use the full Integration Layer API (`dist/index.js`). This requires local Solana environment.
 
 ```bash
-# Corda (example)
-cd corda-component
-./gradlew deployNodes
-./build/nodes/runnodes
-
 # Solana (example)
 solana-test-validator
 cd solana-component
@@ -110,19 +104,22 @@ This runs a set of HTTP checks against the API and validates frontend availabili
 
 ## Architecture Overview
 
-1. Corda Component: privacy-preserving DID
+1. Arweave Component: Permanent Identity Storage
 
 -   Identity Registration (KYC-friendly)
--   Permissioned Access Control
+-   Immutable audit trail
+-   Client-side encryption
 
 2. Solana Component: Data Marketplace
 
 -   Tokenized data ownership (NFT-like)
 -   Listing, purchase, fee distribution
+-   Identity verification and access control
 
 3. Integration Layer
 
--   Cross-chain bridge (proof validation, state sync)
+-   Identity proof validation
+-   State synchronization
 -   REST API and health/status endpoints
 
 ---
@@ -147,7 +144,8 @@ This is a lightweight UI demo using mock data.
 
 ---
 
-## Why Corda + Solana
+## Why Arweave + Solana
 
--   Trust + Privacy (Corda) meets Throughput + Openness (Solana).
+-   Permanent Storage + Privacy (Arweave) meets Throughput + Openness (Solana).
 -   A single integrated user experience with strong identity guarantees and efficient market operations.
+-   Fully decentralized architecture without permissioned networks.

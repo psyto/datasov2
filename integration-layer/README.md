@@ -1,14 +1,14 @@
 # DataSov Integration Layer
 
-A comprehensive cross-chain integration service that bridges Corda and Solana networks for the DataSov hybrid blockchain system. This layer handles identity proof validation, state synchronization, and seamless communication between the two blockchain networks.
+A comprehensive integration service for the DataSov hybrid blockchain system. This layer handles identity proof validation, state synchronization, and seamless communication with Arweave and Solana networks.
 
 ## 🚀 Features
 
--   **Cross-Chain Communication**: Seamless integration between Corda and Solana
--   **Identity Proof Validation**: Cryptographic validation of identity proofs across chains
--   **State Synchronization**: Real-time synchronization of state between networks
--   **Event Bridging**: Event-driven communication between Corda and Solana
--   **REST API Gateway**: Comprehensive API for cross-chain operations
+-   **Identity Management**: Integration with Arweave for permanent identity storage
+-   **Identity Proof Validation**: Cryptographic validation of identity proofs
+-   **State Synchronization**: Real-time synchronization of state with Solana
+-   **Event Processing**: Event-driven communication with blockchain networks
+-   **REST API Gateway**: Comprehensive API for identity and marketplace operations
 -   **Health Monitoring**: Built-in health checks and metrics
 -   **Security**: Enterprise-grade security with encryption and validation
 
@@ -19,9 +19,9 @@ A comprehensive cross-chain integration service that bridges Corda and Solana ne
 │                    DataSov Integration Layer                    │
 ├─────────────────────────────────────────────────────────────────┤
 │  ┌─────────────────────┐    ┌─────────────────────────────────┐     │
-│  │   Corda Service      │    │      Solana Service        │     │
+│  │  Arweave Service     │    │      Solana Service        │     │
 │  │                     │    │                             │     │
-│  │ • Identity Mgmt     │    │ • Data Marketplace         │     │
+│  │ • Identity Storage  │    │ • Data Marketplace         │     │
 │  │ • KYC Verification  │    │ • NFT Operations           │     │
 │  │ • Access Control    │    │ • Trading Operations       │     │
 │  └─────────────────────┘    └─────────────────────────────────┘     │
@@ -52,8 +52,7 @@ A comprehensive cross-chain integration service that bridges Corda and Solana ne
 
 -   Node.js 18+
 -   npm or yarn
--   Corda network running
--   Solana network access
+-   Solana network access (local validator or devnet)
 -   PostgreSQL (optional, for state persistence)
 -   Redis (optional, for caching)
 
@@ -86,12 +85,6 @@ npm start
 PORT=3000
 NODE_ENV=development
 LOG_LEVEL=info
-
-# Corda Configuration
-CORDA_RPC_HOST=localhost
-CORDA_RPC_PORT=10006
-CORDA_RPC_USERNAME=user1
-CORDA_RPC_PASSWORD=test
 
 # Solana Configuration
 SOLANA_RPC_URL=https://api.devnet.solana.com
@@ -141,7 +134,7 @@ curl -X POST http://localhost:3000/data/listing \
     "price": 1000000,
     "dataType": "LOCATION_HISTORY",
     "description": "Location data from verified user",
-    "cordaIdentityId": "USER_12345"
+    "identityId": "USER_12345"
   }'
 ```
 
@@ -154,7 +147,7 @@ curl -X POST http://localhost:3000/data/purchase \
     "buyer": "buyer_keypair",
     "listingId": 1,
     "tokenMint": "token_mint_address",
-    "cordaIdentityId": "USER_12345"
+    "identityId": "USER_12345"
   }'
 ```
 
@@ -162,17 +155,17 @@ curl -X POST http://localhost:3000/data/purchase \
 
 ### Identity Proof Flow
 
-1. **Generate Proof**: Create cryptographic proof of identity on Corda
+1. **Generate Proof**: Create cryptographic proof of identity from Arweave
 2. **Validate Proof**: Verify proof authenticity and expiration
 3. **Enable Trading**: Allow data trading on Solana with validated identity
-4. **Sync State**: Keep both networks synchronized
+4. **Sync State**: Keep networks synchronized
 
 ### Data Trading Flow
 
-1. **Identity Validation**: Verify Corda identity before creating listing
+1. **Identity Validation**: Verify identity before creating listing
 2. **Access Control**: Check permissions before allowing data access
-3. **Trading Operations**: Execute trades on Solana with Corda validation
-4. **Fee Distribution**: Distribute fees based on Corda permissions
+3. **Trading Operations**: Execute trades on Solana with identity validation
+4. **Fee Distribution**: Distribute fees based on permissions
 
 ### State Synchronization
 
@@ -275,8 +268,6 @@ spec:
                   env:
                       - name: PORT
                         value: "3000"
-                      - name: CORDA_RPC_HOST
-                        value: "corda-node"
                       - name: SOLANA_RPC_URL
                         value: "https://api.devnet.solana.com"
 ```
@@ -290,7 +281,6 @@ src/
 ├── api/                 # API Gateway
 │   └── index.ts
 ├── services/           # Core Services
-│   ├── CordaService.ts
 │   ├── SolanaService.ts
 │   ├── CrossChainBridge.ts
 │   └── DataSovClient.ts
@@ -328,17 +318,12 @@ src/
 
 ## 🔗 Integration with DataSov Components
 
-### Corda Component Integration
-
--   **Identity Management**: Direct integration with Corda identity service
--   **KYC Verification**: Seamless KYC verification flow
--   **Access Control**: Real-time access control synchronization
-
 ### Solana Component Integration
 
 -   **Data Marketplace**: Direct integration with Solana marketplace
 -   **NFT Operations**: Seamless NFT creation and management
--   **Trading Operations**: Real-time trading with Corda validation
+-   **Trading Operations**: Real-time trading with identity validation
+-   **Identity Management**: On-chain identity verification and access control
 
 ## 🤝 Contributing
 
@@ -362,7 +347,7 @@ For questions and support:
 
 ---
 
-**DataSov Integration Layer** - Seamlessly connecting Corda and Solana for the future of data ownership.
+**DataSov Integration Layer** - Seamlessly connecting Arweave and Solana for the future of data ownership.
 
 ---
 

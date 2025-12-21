@@ -1,5 +1,0 @@
-rootProject.name = 'datasov-corda'
-
-include 'contracts'
-include 'workflows'
-include 'clients'
